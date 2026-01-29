@@ -28,7 +28,7 @@ local ItemReplication = require(game:GetService("ReplicatedStorage").Util.ItemRe
 local function checkItem(itemList_)
 
     local sum = {}
-    local count_ = nil
+    local count_ = 0
 
     for _, item in ipairs(InventoryController:GetTiles()) do
         local itemId = item.ItemId
