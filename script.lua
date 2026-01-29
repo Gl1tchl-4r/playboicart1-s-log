@@ -68,8 +68,8 @@ end
 
 while task.wait(3) do
     pcall(function()
-
-        local messages = "🎀 Dojo Belt(" .. logDesc("Belt") .. "/8)" .. " • 🦴 Bones: " .. logDesc("Bone") .. " • 💘 Heart: " .. logDesc("Heart") .. " • 🥚 Dragon Egg: " .. logDesc("Egg")
+        local race = game:GetService("Players").LocalPlayer.Data.Race.Value
+        local messages = "🎀 Dojo Belt(" .. logDesc("Belt") .. "/8)" .. " • 🦴 Bones: " .. logDesc("Bone") .. " • 💘 Heart: " .. logDesc("Heart") .. " • 🥚 Dragon Egg: " .. logDesc("Egg") .. " • Race: " .. race
 
         _G.Horst_SetDescription(messages)
 
