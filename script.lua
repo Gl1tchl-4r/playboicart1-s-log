@@ -1,11 +1,11 @@
-getgenv().Configs = {
-    ["Race_cfgs"] = {
-        ["Enable"] = true,
-        ["Race"] = "Human",
-        ["Ability"] = 3,
-        ["Tier"] = 10 -- แนะนำถ้าไม่ทำ v4 อย่าใส่ 0
-    }
-}
+-- getgenv().Configs = {
+--     ["Race_cfgs"] = {
+--         ["Enable"] = true,
+--         ["Race"] = "Human",
+--         ["Ability"] = 3,
+--         ["Tier"] = 10 -- แนะนำถ้าไม่ทำ v4 อย่าใส่ 0
+--     }
+-- }
 
 repeat task.wait(0.1) until game:IsLoaded() and _G.Horst_SetDescription
 
