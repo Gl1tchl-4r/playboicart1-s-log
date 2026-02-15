@@ -1,3 +1,12 @@
+getgenv().Configs = {
+    ["Race_cfgs"] = {
+        ["Enable"] = true,
+        ["Race"] = "Human",
+        ["Ability"] = 3,
+        ["Tier"] = 10 -- แนะนำถ้าไม่ทำ v4 อย่าใส่ 0
+    }
+}
+
 repeat task.wait(0.1) until game:IsLoaded() and _G.Horst_SetDescription
 
 local itemList = {
@@ -19,6 +28,12 @@ local itemList = {
     },
     ["Dragon Egg"] =  {
         {name = "Dragon Egg", id = 565}
+    },
+    ["Dragon Scale"] =  {
+        {name = "Dragon Scale", id = 584}
+    },
+    ["Blaze Ember"] =  {
+        {name = "Dragon Egg", id = 587}
     }
 }
 
@@ -62,6 +77,12 @@ local function logDesc(types)
     elseif types == "Egg" then
         count = checkItem(itemList["Dragon Egg"])
         return  count
+    elseif types == "DragonSc" then
+        count = checkItem(itemList["Dragon Scale"])
+        return  count
+    elseif types == "BlazeEm" then
+        count = checkItem(itemList["Blaze Ember"])
+        return  count
     end
 
 end
@@ -69,7 +90,16 @@ end
 while task.wait(3) do
     pcall(function()
         local race = game:GetService("Players").LocalPlayer.Data.Race.Value
-        local messages = "🎀 Dojo Belt(" .. logDesc("Belt") .. "/8)" .. " • 🦴 Bones: " .. logDesc("Bone") .. " • 💘 Heart: " .. logDesc("Heart") .. " • 🥚 Dragon Egg: " .. logDesc("Egg") .. " • Race: " .. race
+        local raceVersion = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("CommF_"):InvokeServer("getRaceLevel")
+        local raceTier = game:GetService("Players").LocalPlayer.Data.Race.C
+
+        if getgenv().Configs["Race_cfgs"]["Enable"] then
+            if (race == getgenv().Configs["Race_cfgs"]["Race"] and raceVersion == getgenv().Configs["Race_cfgs"]["Ability"]) or raceTier == getgenv().Configs["Race_cfgs"]["Tier"] then
+                _G.Horst_AccountChangeDone()
+            end
+        end
+
+        local messages = "🎀 Dojo Belt(" .. logDesc("Belt") .. "/8)" .. " • 🦴 Bones: " .. logDesc("Bone") .. " • 💘 Heart: " .. logDesc("Heart") .. " • 🥚 Dragon Egg: " .. logDesc("Egg") .. " • 🍃 Dragon Scale: " .. logDesc("DragonSc") .. " • 🔥 Blaze Ember: " .. logDesc("BlazeEm") .. " • Race: " .. race .. " V." .. raceVersion .. "[" .. raceTier .. "]"
 
         _G.Horst_SetDescription(messages)
 
