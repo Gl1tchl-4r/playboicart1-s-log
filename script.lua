@@ -9,7 +9,7 @@
 -- }
 
 -- รอแค่ของที่จำเป็นจริงๆ ที่ต้องใช้ใน Logic หลัก
-repeat task.wait() until game:IsLoaded() and game.Players.LocalPlayer
+repeat wait() until game:IsLoaded() and game.Players.LocalPlayer
 
 local Player = game.Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -65,7 +65,7 @@ end
 
 -- Main Loop
 spawn(function()
-    while task.wait(3) do
+    while wait(3) do
         -- เช็คเงื่อนไขความพร้อมข้างใน loop แทนการหยุดสคริปต์
         if Player.Character and _G.Horst_SetDescription then
             pcall(function()
