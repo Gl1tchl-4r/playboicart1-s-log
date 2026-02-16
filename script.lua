@@ -2,6 +2,7 @@
 --     ["Race_cfgs"] = {
 --         ["Enable"] = true,
 --         ["Race"] = "Human",
+--         ["CheckMode"] = "Ability", -- Ability, Tier
 --         ["Ability"] = 3,
 --         ["Tier"] = 10 -- แนะนำถ้าไม่ทำ v4 อย่าใส่ 0
 --     }
@@ -88,13 +89,14 @@ local function logDesc(types)
 end
 
 while task.wait(3) do
-    pcall(function()
+    local success, err = pcall(function()
+
         local race = game:GetService("Players").LocalPlayer.Data.Race.Value
         local raceVersion = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("CommF_"):InvokeServer("getRaceLevel")
-        local raceTier = game:GetService("Players").LocalPlayer.Data.Race.C
+        local raceTier = game:GetService("Players").LocalPlayer.Data.Race.C.Value
 
         if getgenv().Configs["Race_cfgs"]["Enable"] then
-            if (race == getgenv().Configs["Race_cfgs"]["Race"] and raceVersion == getgenv().Configs["Race_cfgs"]["Ability"]) or raceTier == getgenv().Configs["Race_cfgs"]["Tier"] then
+            if (race == getgenv().Configs["Race_cfgs"]["Race"] and raceVersion == getgenv().Configs["Race_cfgs"]["Ability"] and getgenv().Configs["Race_cfgs"]["CheckMode"] == "Ability") or (raceTier == getgenv().Configs["Race_cfgs"]["Tier"] and getgenv().Configs["Race_cfgs"]["CheckMode"] == "Tier" and race == getgenv().Configs["Race_cfgs"]["Race"]) then
                 _G.Horst_AccountChangeDone()
             end
         end
@@ -102,6 +104,9 @@ while task.wait(3) do
         local messages = "🎀 Dojo Belt(" .. logDesc("Belt") .. "/8)" .. " • 🦴 Bones: " .. logDesc("Bone") .. " • 💘 Heart: " .. logDesc("Heart") .. " • 🥚 Dragon Egg: " .. logDesc("Egg") .. " • 🍃 Dragon Scale: " .. logDesc("DragonSc") .. " • 🔥 Blaze Ember: " .. logDesc("BlazeEm") .. " • Race: " .. race .. " V." .. raceVersion .. "[" .. raceTier .. "]"
 
         _G.Horst_SetDescription(messages)
-
     end)
+
+    if not success then
+        warn("Script Error: " .. tostring(err))
+    end
 end
