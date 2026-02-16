@@ -4,109 +4,106 @@
 --         ["Race"] = "Human",
 --         ["CheckMode"] = "Ability", -- Ability, Tier
 --         ["Ability"] = 3,
---         ["Tier"] = 10 -- แนะนำถ้าไม่ทำ v4 อย่าใส่ 0
+--         ["Tier"] = 10
 --     }
 -- }
 
-repeat task.wait(0.1) until game:IsLoaded() and _G.Horst_SetDescription
+-- รอแค่ของที่จำเป็นจริงๆ ที่ต้องใช้ใน Logic หลัก
+repeat task.wait() until game:IsLoaded() and game.Players.LocalPlayer
+
+local Player = game.Players.LocalPlayer
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+-- ฟังก์ชันดึง Module แบบปลอดภัย
+local function getModules()
+    local success, inv = pcall(function() return require(ReplicatedStorage.Controllers.UI.Inventory) end)
+    local success2, rep = pcall(function() return require(ReplicatedStorage.Util.ItemReplication) end)
+    return success and inv, success2 and rep
+end
 
 local itemList = {
-    ["Doja Belt"] = {
-        {name = "Dojo Belt (Black)", id = 209},
-        {name = "Dojo Belt (Red)", id = 210},
-        {name = "Dojo Belt (Blue)", id = 211},
-        {name = "Dojo Belt (Green)", id = 212},
-        {name = "Dojo Belt (Orange)", id = 213},
-        {name = "Dojo Belt (Yellow)", id = 214},
-        {name = "Dojo Belt (White)", id = 215},
-        {name = "Dojo Belt (Purple)", id = 216}
-    },
-    ["Bone"] = {
-        {name = "Dinosaur Bones", id = 585}
-    },
-    ["Heart"] =  {
-        {name = "Leviathan Heart", id = 570}
-    },
-    ["Dragon Egg"] =  {
-        {name = "Dragon Egg", id = 565}
-    },
-    ["Dragon Scale"] =  {
-        {name = "Dragon Scale", id = 584}
-    },
-    ["Blaze Ember"] =  {
-        {name = "Dragon Egg", id = 587}
-    }
+    ["Doja Belt"] = { {id = 209}, {id = 210}, {id = 211}, {id = 212}, {id = 213}, {id = 214}, {id = 215}, {id = 216} },
+    ["Bone"] = { {id = 585} },
+    ["Heart"] = { {id = 570} },
+    ["Dragon Egg"] = { {id = 565} },
+    ["Dragon Scale"] = { {id = 584} },
+    ["Blaze Ember"] = { {id = 587} }
 }
 
-local InventoryController = require(game:GetService("ReplicatedStorage").Controllers.UI.Inventory)
-local ItemReplication = require(game:GetService("ReplicatedStorage").Util.ItemReplication)
+local function checkItem(targetList)
+    local InventoryController, ItemReplication = getModules()
+    if not InventoryController or not ItemReplication then return 0, 0 end
 
-local function checkItem(itemList_)
-
-    local sum = {}
-    local count_ = 0
+    local totalCount = 0
+    local uniqueMatchCount = 0
+    local foundIds = {}
 
     for _, item in ipairs(InventoryController:GetTiles()) do
-        local itemId = item.ItemId
-        local uid = item.NetworkedUID
-        local count = ItemReplication.Quantity.readClient(itemId, uid) or 0
-
-        for _, target in ipairs(itemList_) do
-            if itemId == target.id then
-                count_ = count
-                table.insert(sum, target.name)
+        for _, target in ipairs(targetList) do
+            if item.ItemId == target.id then
+                local count = ItemReplication.Quantity.readClient(item.ItemId, item.NetworkedUID) or 0
+                totalCount = totalCount + count
+                if not foundIds[target.id] then
+                    uniqueMatchCount = uniqueMatchCount + 1
+                    foundIds[target.id] = true
+                end
             end
         end
     end
-
-    return count_, #sum
-
+    return totalCount, uniqueMatchCount
 end
 
 local function logDesc(types)
-    local count, sum
-
-    if types == "Belt" then
-        count, sum = checkItem(itemList["Doja Belt"])
-        return sum
-    elseif types == "Bone" then
-        count = checkItem(itemList["Bone"])
-        return  count
-    elseif types == "Heart" then
-        count = checkItem(itemList["Heart"])
-        return  count
-    elseif types == "Egg" then
-        count = checkItem(itemList["Dragon Egg"])
-        return  count
-    elseif types == "DragonSc" then
-        count = checkItem(itemList["Dragon Scale"])
-        return  count
-    elseif types == "BlazeEm" then
-        count = checkItem(itemList["Blaze Ember"])
-        return  count
-    end
-
+    if types == "Belt" then return select(2, checkItem(itemList["Doja Belt"])) end
+    if types == "Bone" then return (checkItem(itemList["Bone"])) end
+    if types == "Heart" then return (checkItem(itemList["Heart"])) end
+    if types == "Egg" then return (checkItem(itemList["Dragon Egg"])) end
+    if types == "DragonSc" then return (checkItem(itemList["Dragon Scale"])) end
+    if types == "BlazeEm" then return (checkItem(itemList["Blaze Ember"])) end
+    return 0
 end
 
-while task.wait(3) do
-    local success, err = pcall(function()
+-- Main Loop
+spawn(function()
+    while task.wait(3) do
+        -- เช็คเงื่อนไขความพร้อมข้างใน loop แทนการหยุดสคริปต์
+        if Player.Character and _G.Horst_SetDescription then
+            pcall(function()
+                local data = Player:WaitForChild("Data", 5)
+                local raceObj = data:WaitForChild("Race", 5)
+                local raceTierObj = raceObj:WaitForChild("C", 5)
+                
+                local raceValue = raceObj.Value
+                local raceTierValue = raceTierObj.Value
+                local raceVersion = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("CommF_"):InvokeServer("getRaceLevel")
 
-        local race = game:GetService("Players").LocalPlayer.Data.Race.Value
-        local raceVersion = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("CommF_"):InvokeServer("getRaceLevel")
-        local raceTier = game:GetService("Players").LocalPlayer.Data.Race.C.Value
+                -- Logic การเช็ค Race
+                local cfg = getgenv().Configs["Race_cfgs"]
+                if cfg["Enable"] then
+                    local isMatch = false
+                    if cfg["CheckMode"] == "Ability" then
+                        if raceValue == cfg["Race"] and raceVersion == cfg["Ability"] then isMatch = true end
+                    elseif cfg["CheckMode"] == "Tier" then
+                        if raceValue == cfg["Race"] and raceTierValue == cfg["Tier"] then isMatch = true end
+                    end
 
-        if getgenv().Configs["Race_cfgs"]["Enable"] then
-            if (race == getgenv().Configs["Race_cfgs"]["Race"] and raceVersion == getgenv().Configs["Race_cfgs"]["Ability"] and getgenv().Configs["Race_cfgs"]["CheckMode"] == "Ability") or (raceTier == getgenv().Configs["Race_cfgs"]["Tier"] and getgenv().Configs["Race_cfgs"]["CheckMode"] == "Tier" and race == getgenv().Configs["Race_cfgs"]["Race"]) then
-                _G.Horst_AccountChangeDone()
-            end
+                    if isMatch and _G.Horst_AccountChangeDone then
+                        _G.Horst_AccountChangeDone()
+                    end
+                end
+
+                -- สร้างข้อความ
+                local msg = string.format(
+                    "🎀 Dojo Belt(%s/8) • 🦴 Bones: %s • 💘 Heart: %s • 🥚 Egg: %s • 🍃 Scale: %s • 🔥 Ember: %s • Race: %s V.%s [%s]",
+                    logDesc("Belt"), logDesc("Bone"), logDesc("Heart"), logDesc("Egg"), logDesc("DragonSc"), logDesc("BlazeEm"),
+                    tostring(raceValue), tostring(raceVersion), tostring(raceTierValue)
+                )
+                
+                _G.Horst_SetDescription(msg)
+                print("Updated: " .. msg)
+            end)
+        else
+            print("Waiting for Character or Function...")
         end
-
-        local messages = "🎀 Dojo Belt(" .. logDesc("Belt") .. "/8)" .. " • 🦴 Bones: " .. logDesc("Bone") .. " • 💘 Heart: " .. logDesc("Heart") .. " • 🥚 Dragon Egg: " .. logDesc("Egg") .. " • 🍃 Dragon Scale: " .. logDesc("DragonSc") .. " • 🔥 Blaze Ember: " .. logDesc("BlazeEm") .. " • Race: " .. race .. " V." .. raceVersion .. "[" .. raceTier .. "]"
-
-        _G.Horst_SetDescription(messages)
-    end)
-
-    if not success then
-        warn("Script Error: " .. tostring(err))
     end
-end
+end)
