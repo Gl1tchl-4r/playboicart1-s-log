@@ -2,6 +2,7 @@ getgenv().Configs = {
     ["Race_cfgs"] = {
         ["Enable"] = true,
         ["Race"] = "Human",
+        ["CheckMode"] = "Ability", -- Ability, Tier
         ["Ability"] = 3,
         ["Tier"] = 10 -- แนะนำถ้าไม่ทำ v4 อย่าใส่ 0
     }
