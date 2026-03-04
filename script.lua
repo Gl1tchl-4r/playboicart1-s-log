@@ -5,6 +5,15 @@
 --         ["CheckMode"] = "Ability", -- Ability, Tier
 --         ["Ability"] = 3,
 --         ["Tier"] = 10
+--     },
+--     ["Item_cfgs"] = {
+--         ["Enable"] = true,
+--         ["Targets"] = {
+--             ["Bone"] = {Enabled = true, Goal = 5},
+--             ["Dragon Egg"] = {Enabled = true, Goal = 0},
+--             ["Dragon Scale"] = {Enabled = true, Goal = 0},
+--             ["Blaze Ember"] = {Enabled = true, Goal = 0}
+--         }
 --     }
 -- }
 
@@ -63,6 +72,29 @@ local function logDesc(types)
     return 0
 end
 
+-- ฟังก์ชันเช็คว่า Item ทั้งหมดตรงกับเป้าหมายหรือไม่
+local function checkItemTargets()
+    local cfg = getgenv().Configs["Item_cfgs"]
+    if not cfg or not cfg["Enable"] then return false end
+    
+    local targets = cfg["Targets"]
+    for itemName, config in pairs(targets) do
+        if config.Enabled then
+            local currentCount = logDesc(
+                itemName == "Bone" and "Bone" or
+                itemName == "Dragon Egg" and "Egg" or
+                itemName == "Dragon Scale" and "DragonSc" or
+                itemName == "Blaze Ember" and "BlazeEm" or
+                "Unknown"
+            )
+            if currentCount ~= config.Goal then
+                return false
+            end
+        end
+    end
+    return true
+end
+
 -- Main Loop
 spawn(function()
     while wait(3) do
@@ -88,6 +120,14 @@ spawn(function()
                     end
 
                     if isMatch and _G.Horst_AccountChangeDone then
+                        _G.Horst_AccountChangeDone()
+                    end
+                end
+
+                -- Logic การเช็ค Item Targets
+                local itemCfg = getgenv().Configs["Item_cfgs"]
+                if itemCfg["Enable"] and checkItemTargets() then
+                    if _G.Horst_AccountChangeDone then
                         _G.Horst_AccountChangeDone()
                     end
                 end

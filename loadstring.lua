@@ -4,7 +4,16 @@ getgenv().Configs = {
         ["Race"] = "Human",
         ["CheckMode"] = "Ability", -- Ability, Tier
         ["Ability"] = 3,
-        ["Tier"] = 10 -- แนะนำถ้าไม่ทำ v4 อย่าใส่ 0
+        ["Tier"] = 10
+    },
+    ["Item_cfgs"] = {
+        ["Enable"] = true,
+        ["Targets"] = {
+            ["Bone"] = {Enabled = true, Goal = 5},
+            ["Dragon Egg"] = {Enabled = true, Goal = 0},
+            ["Dragon Scale"] = {Enabled = true, Goal = 0},
+            ["Blaze Ember"] = {Enabled = true, Goal = 0}
+        }
     }
 }
 
