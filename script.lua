@@ -87,7 +87,7 @@ local function checkItemTargets()
                 itemName == "Blaze Ember" and "BlazeEm" or
                 "Unknown"
             )
-            if currentCount ~= config.Goal then
+            if currentCount < config.Goal then
                 return false
             end
         end
