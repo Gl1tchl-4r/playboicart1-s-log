@@ -1,23 +1,23 @@
-getgenv().Configs = {
-    ["Race_cfgs"] = {
-        ["Enable"] = true,
-        ["Race"] = "Human",
-        ["CheckMode"] = "Ability", -- Ability, Tier
-        ["Ability"] = 3,
-        ["Tier"] = 10
-    },
-    ["Item_cfgs"] = {
-        ["Enable"] = true,
-        ["Targets"] = {
-            ["Bone"] = {Enabled = false, Goal = 5},
-            ["Dragon Egg"] = {Enabled = false, Goal = 0},
-            ["Dragon Scale"] = {Enabled = false, Goal = 0},
-            ["Blaze Ember"] = {Enabled = false, Goal = 0},
-            ["Rainbow Haki"] = {Enabled = false},
-            ["DacoDoor"] = {Enabled = false}
-        }
-    }
-}
+-- getgenv().Configs = {
+--     ["Race_cfgs"] = {
+--         ["Enable"] = true,
+--         ["Race"] = "Human",
+--         ["CheckMode"] = "Ability", -- Ability, Tier
+--         ["Ability"] = 3,
+--         ["Tier"] = 10
+--     },
+--     ["Item_cfgs"] = {
+--         ["Enable"] = true,
+--         ["Targets"] = {
+--             ["Bone"] = {Enabled = false, Goal = 5},
+--             ["Dragon Egg"] = {Enabled = false, Goal = 0},
+--             ["Dragon Scale"] = {Enabled = false, Goal = 0},
+--             ["Blaze Ember"] = {Enabled = false, Goal = 0},
+--             ["Rainbow Haki"] = {Enabled = false},
+--             ["DacoDoor"] = {Enabled = false}
+--         }
+--     }
+-- }
 
 -- รอแค่ของที่จำเป็นจริงๆ ที่ต้องใช้ใน Logic หลัก
 repeat wait() until game:IsLoaded() and game.Players.LocalPlayer
