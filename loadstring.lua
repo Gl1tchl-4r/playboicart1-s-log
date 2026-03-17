@@ -9,10 +9,12 @@ getgenv().Configs = {
     ["Item_cfgs"] = {
         ["Enable"] = true,
         ["Targets"] = {
-            ["Bone"] = {Enabled = true, Goal = 5},
-            ["Dragon Egg"] = {Enabled = true, Goal = 0},
-            ["Dragon Scale"] = {Enabled = true, Goal = 0},
-            ["Blaze Ember"] = {Enabled = true, Goal = 0}
+            ["Bone"] = {Enabled = false, Goal = 5},
+            ["Dragon Egg"] = {Enabled = false, Goal = 0},
+            ["Dragon Scale"] = {Enabled = false, Goal = 0},
+            ["Blaze Ember"] = {Enabled = false, Goal = 0},
+            ["Rainbow Haki"] = {Enabled = false},
+            ["DacoDoor"] = {Enabled = false}
         }
     }
 }
