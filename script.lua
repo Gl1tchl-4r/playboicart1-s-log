@@ -2,12 +2,12 @@
 --     ["Race_cfgs"] = {
 --         ["Enable"] = true,
 --         ["Race"] = "Human",
---         ["CheckMode"] = "Ability", -- Ability, Tier
+--         ["CheckMode"] = "", -- Ability, Tier
 --         ["Ability"] = 3,
 --         ["Tier"] = 10
 --     },
 --     ["Item_cfgs"] = {
---         ["Enable"] = true,
+--         ["Enable"] = false,
 --         ["Targets"] = {
 --             ["Bone"] = {Enabled = false, Goal = 5},
 --             ["Dragon Egg"] = {Enabled = false, Goal = 0},
@@ -91,11 +91,12 @@ local function logDesc(types)
     if types == "Dragonstorm" then return (select(3, checkItem(itemList["Dragonstorm"]))) end -- return mastery
 
     if types == "DacoDoor" then
-        local isDoorOpened = workspace.Map.Waterfall.IslandModel.DojoTempleDoor.RootPart.CanCollide
-        if isDoorOpened then
-            return "🔴"
-        else
+        local remote = workspace:WaitForChild("HydraIslandClient"):WaitForChild("RemoteFunction")
+        local progressData = remote:InvokeServer("progress")
+        if progressData.complete == 2 then
             return "🟢" 
+        else
+            return "🔴"
         end
     end
 
@@ -134,7 +135,7 @@ end
 -- Main Loop
 spawn(function()
     while wait(3) do
-        -- เช็คเงื่อนไขความพร้อมข้างใน loop แทนการหยุดสคริปต์
+
         if Player.Character and _G.Horst_SetDescription then
             pcall(function()
                 local data = Player:WaitForChild("Data", 5)

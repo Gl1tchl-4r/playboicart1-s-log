@@ -2,12 +2,12 @@ getgenv().Configs = {
     ["Race_cfgs"] = {
         ["Enable"] = true,
         ["Race"] = "Human",
-        ["CheckMode"] = "Ability", -- Ability, Tier
+        ["CheckMode"] = "", -- Ability, Tier
         ["Ability"] = 3,
         ["Tier"] = 10
     },
     ["Item_cfgs"] = {
-        ["Enable"] = true,
+        ["Enable"] = false,
         ["Targets"] = {
             ["Bone"] = {Enabled = false, Goal = 5},
             ["Dragon Egg"] = {Enabled = false, Goal = 0},
